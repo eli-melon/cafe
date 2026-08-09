@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>amy and eli's café</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gochi+Hand&family=Noto+Emoji:wght@400&display=swap">
+  <style>
+    @font-face {
+      font-family: 'KGPrimaryPenmanship';
+      src: url('font/KGPrimaryPenmanship2.ttf') format('truetype');
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body, * { cursor: url('assets/cursor copy.png') 0 0, auto !important; }
+    a, button, .btn, .win-btn { cursor: url('assets/point.png') 12 4, pointer !important; }
+
+    body {
+      min-height: 100vh;
+      background-color: #b8d4b5;
+      background-image: radial-gradient(circle, rgba(255,255,255,0.38) 1.5px, transparent 1.5px);
+      background-size: 13px 13px;
+      display: flex;
+      justify-content: center;
+      padding: 28px 16px;
+      font-family: 'KGPrimaryPenmanship', 'Trebuchet MS', sans-serif;
+      font-size: 14px;
+      color: #333;
+    }
+
+    .cafe-card {
+      width: 620px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .banner {
+      position: relative;
+      background-color: #8aac87;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22'%3E%3Cpath d='M11 1 L21 11 L11 21 L1 11 Z' fill='none' stroke='rgba(255,255,255,0.2)' stroke-width='1'/%3E%3C/svg%3E");
+      background-size: auto;
+      color: #f0f6ee;
+      text-align: center;
+      padding: 8px 44px;
+      font-size: 16px;
+      letter-spacing: 0.4px;
+    }
+
+    .win-controls {
+      position: absolute;
+      right: 6px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      gap: 3px;
+    }
+    .win-btn {
+      width: 17px;
+      height: 15px;
+      background: #c8c8c8;
+      border-top: 2px solid #e8e8e8;
+      border-left: 2px solid #e8e8e8;
+      border-right: 2px solid #5a5a5a;
+      border-bottom: 2px solid #5a5a5a;
+      font-size: 9px;
+      font-weight: 900;
+      font-family: 'Arial Narrow', Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: url('assets/point.png'), pointer;
+      color: #111;
+      line-height: 1;
+      user-select: none;
+      letter-spacing: 0;
+    }
+    .win-btn:active {
+      border-top: 2px solid #5a5a5a;
+      border-left: 2px solid #5a5a5a;
+      border-right: 2px solid #e8e8e8;
+      border-bottom: 2px solid #e8e8e8;
+    }
+
+
+    .section {
+      background: #ffffff;
+      border: 2px solid #8aac87;
+      padding: 13px 15px;
+    }
+    .section:last-child { border-bottom: 2px solid #8aac87; }
+
+
+    .tag {
+      display: inline-block;
+      background: #8aac87;
+      color: #fff;
+      font-size: 11.5px;
+      padding: 2px 9px;
+      border-radius: 3px;
+      font-weight: 600;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+
+
+    .btn {
+      display: inline-block;
+      background: #8aac87;
+      color: #fff;
+      font-size: 12px;
+      padding: 4px 16px;
+      border-radius: 4px;
+      text-decoration: none;
+      margin-right: 6px;
+      cursor: url('assets/point.png'), pointer;
+    }
+
+
+    .g  { color: #6b9068; }
+    .ul { text-decoration: underline; }
+
+
+    .img-ph {
+      background: #c9dac6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      color: #8aac87;
+      font-size: 10px;
+    }
+
+    .intro { display: grid; grid-template-columns: 195px 1fr; gap: 14px; }
+
+    .intro-left { font-size: 12px; }
+    .intro-food-img {
+      width: 100%;
+      height: 170px;
+      border-radius: 8px;
+      margin: 6px 0 8px;
+    }
+    .intro-caption { line-height: 1.55; }
+
+    .intro-right { line-height: 1.55; }
+    .pruniaz {
+      font-size: 19px;
+      font-weight: bold;
+      margin-bottom: 5px;
+      letter-spacing: 0.3px;
+    }
+
+
+    #meal-canvas {
+      width: 100%;
+      height: 280px;
+      background: linear-gradient(135deg, #e8f3e6 0%, #f0f6ee 100%);
+      border: 1px dashed #a8d4a5;
+      border-radius: 4px;
+      margin-bottom: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .meal-ingredients {
+      background: #f9fcf8;
+      border-top: 1px solid #d8e5d6;
+      border-radius: 0 0 4px 4px;
+      padding: 10px;
+      max-height: 160px;
+      overflow-y: auto;
+    }
+
+    .ingredient-toolbar {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(65px, 1fr));
+      gap: 8px;
+    }
+
+    .ingredient-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      padding: 6px;
+      background: #fff;
+      border: 1px solid #c8d9c5;
+      border-radius: 3px;
+      cursor: grab;
+      transition: all 0.15s;
+      font-size: 11px;
+      color: #555;
+      text-align: center;
+      user-select: none;
+    }
+
+    .ingredient-item:hover {
+      background: #f5faf4;
+      border-color: #8aac87;
+      box-shadow: 0 2px 4px rgba(138, 172, 135, 0.2);
+    }
+
+    .ingredient-item:active {
+      cursor: grabbing;
+    }
+
+    .ingredient-img {
+      width: 48px;
+      height: 48px;
+      object-fit: contain;
+      pointer-events: none;
+    }
+
+
+    .canvas-item {
+      position: absolute;
+      cursor: url('assets/point.png') 12 4, grab !important;
+      user-select: none;
+    }
+    .canvas-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      pointer-events: none;
+      filter: drop-shadow(0 2px 5px rgba(0,0,0,0.15));
+    }
+    .canvas-item.dragging {
+      cursor: url('assets/point.png') 12 4, grabbing !important;
+      filter: drop-shadow(0 4px 10px rgba(0,0,0,0.28));
+    }
+
+
+    .polaroid-wall {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 28px 16px 32px;
+      min-height: 220px;
+      background: #f5f0e8;
+    }
+    .photo-card {
+      flex-shrink: 0;
+      width: 130px;
+      aspect-ratio: 4/5;
+      padding: 10px;
+      background-color: #f9f7f5;
+      box-shadow: 2px 2px 12px rgba(0,0,0,0.2);
+      position: relative;
+      z-index: 1;
+    }
+    .photo-card .img-wrapper {
+      width: 100%;
+      aspect-ratio: 1/1;
+      position: relative;
+    }
+    .photo-card .img-wrapper::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      box-shadow: inset 2px 2px 4px rgba(0,0,0,0.43), inset -1px -1px 4px rgba(0,0,0,0.18);
+    }
+    .photo-card .img-wrapper img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: contrast(1.15) brightness(0.92);
+    }
+    .photo-placeholder {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #e8f3e6, #d8e8d4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      color: #a8c4a5;
+      text-align: center;
+    }
+    .photo-card .photo-caption {
+      font-family: 'Gochi Hand', 'KGPrimaryPenmanship', cursive;
+      font-size: 13px;
+      text-align: end;
+      padding-top: 8px;
+      color: #333;
+      line-height: 1.2;
+    }
+    .photo-card .deco {
+      position: absolute;
+      inset: 0;
+      font-family: 'Noto Emoji', sans-serif;
+      font-size: 22px;
+      filter: url('#noise');
+      pointer-events: none;
+    }
+    .photo-card .deco span { position: absolute; }
+    .order-columns {
+      display: grid;
+      grid-template-columns: 1fr 200px;
+      gap: 16px;
+    }
+    .order-section-title {
+      font-size: 13px;
+      color: #6b9068;
+      font-weight: bold;
+      margin-bottom: 9px;
+    }
+    #save-confirm {
+      font-size: 11px;
+      color: #6b9068;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .order-json-box {
+      background: #f0f6ee;
+      border: 1px solid #c8d9c5;
+      border-radius: 3px;
+      padding: 8px;
+      font-size: 9.5px;
+      font-family: monospace;
+      color: #444;
+      white-space: pre-wrap;
+      max-height: 80px;
+      overflow-y: auto;
+      margin-top: 6px;
+    }
+    details > summary {
+      font-size: 11px;
+      color: #8aac87;
+      cursor: url('assets/point.png') 12 4, pointer !important;
+      margin-top: 8px;
+    }
+
+
+    .cal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+    .cal-title { font-size: 12px; color: #555; }
+    .cal-nav {
+      background: #8aac87;
+      color: #fff;
+      border: none;
+      width: 20px;
+      height: 20px;
+      font-size: 13px;
+      line-height: 1;
+      border-radius: 2px;
+      cursor: url('assets/point.png') 12 4, pointer !important;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      font-family: inherit;
+    }
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 2px;
+    }
+    .cal-day-hdr {
+      text-align: center;
+      font-size: 8.5px;
+      color: #8aac87;
+      font-weight: bold;
+      padding: 2px 0;
+    }
+    .cal-day {
+      text-align: center;
+      padding: 3px 1px;
+      font-size: 10px;
+      border-radius: 2px;
+      color: #666;
+    }
+    .cal-day.has-order {
+      background: #8aac87;
+      color: #fff;
+      font-weight: bold;
+      cursor: url('assets/point.png') 12 4, pointer !important;
+    }
+    .cal-day.has-order:hover { background: #6b9068; }
+
+
+    #preview-canvas {
+      width: 100%;
+      height: 280px;
+      background: linear-gradient(135deg, #e8f3e6 0%, #f0f6ee 100%);
+      border: 1px dashed #a8d4a5;
+      border-radius: 4px;
+      position: relative;
+      overflow: hidden;
+    }
+    #message-label {
+      font-size: 11px;
+      color: #8aac87;
+      text-align: center;
+      margin-top: 7px;
+      font-style: italic;
+    }
+    #preview-label {
+      font-size: 11px;
+      color: #8aac87;
+      text-align: center;
+      margin-top: 7px;
+      font-style: italic;
+    }
+    .profile-bio { font-size: 12px; color: #555; margin-bottom: 8px; }
+
+
+    .sprite-track {
+      position: relative;
+      width: 100%;
+      height: 128px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+
+    .sprite-runner {
+      position: absolute;
+      bottom: 0;
+      width: 96px;
+      height: 100px; 
+      background-repeat: no-repeat;
+      background-size: 576px 960px;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+      will-change: left, background-position-x;
+    }
+
+    #sprite-eli {
+      background-image: url('assets/sprites/eli_sprite.png');
+      background-position-y: -120px;
+      animation:
+        sprite-frames 1.0s steps(6, end) infinite,
+        run-across    8s linear -1.5s infinite;
+    }
+    #sprite-amy {
+      background-image: url('assets/sprites/amy_sprite.png');
+      background-position-y: -120px;
+      animation:
+        sprite-frames 1.0s steps(6, end) infinite,
+        run-across    8s linear 0s infinite;
+    }
+    @keyframes sprite-frames {
+      from { background-position-x:    0px; }
+      to   { background-position-x: -576px; }
+    }
+    @keyframes run-across {
+      from { left: -96px; }
+      to   { left: calc(100% + 96px); }
+    }
+    .social-btns { margin-bottom: 9px; }
+    .switch-line { font-size: 12px; color: #444; margin-bottom: 8px; }
+    .likes-row { font-size: 12px; margin-bottom: 5px; line-height: 1.5; }
+
+
+    .about { display: grid; grid-template-columns: 1fr 175px; gap: 14px; }
+
+    .about-text p { font-size: 12px; color: #444; line-height: 1.6; margin-bottom: 9px; }
+
+    .price-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .price-item { text-align: center; }
+    .price-img {
+      width: 78px;
+      height: 78px;
+      border-radius: 50%;
+      margin: 0 auto 3px;
+    }
+    .price-label { font-size: 12px; color: #555; }
+
+
+    .spec { display: grid; grid-template-columns: 155px 1fr 165px; gap: 12px; }
+
+    .spec-left { font-size: 12px; line-height: 1.55; }
+    .spec-sushi-img {
+      width: 100%;
+      height: 95px;
+      border-radius: 6px;
+      margin: 7px 0 8px;
+    }
+
+    .spec-mid { font-size: 12px; line-height: 1.55; }
+    .spec-rolls-img {
+      width: 100%;
+      height: 78px;
+      border-radius: 6px;
+      margin: 7px 0;
+    }
+
+    .spec-right { font-size: 12px; line-height: 1.55; }
+
+
+    .games-text { font-size: 12px; color: #444; line-height: 1.6; }
+
+    .delicacies { font-size: 12px; color: #555; text-align: center; margin-bottom: 7px; }
+    .food-imgs { display: flex; gap: 8px; justify-content: center; align-items: flex-end; }
+    .sushi-box-img { width: 100px; height: 85px; border-radius: 5px; }
+    .drink-img     { width: 72px;  height: 100px; border-radius: 5px; }
+
+
+    .fortune-cookie-container {
+        position: relative;
+        width: 100%;
+        max-width: 800px; 
+        margin: 0 auto;
+        cursor: pointer;
+        user-select: none; 
+    }
+
+
+    .cookie-img {
+        width: 100%;
+        display: block;
+        transition: opacity 0.3s ease-in-out;
+    }
+
+
+    .cookie-img.open {
+        position: absolute;
+        top: 0;
+        left: 0;
+        opacity: 0; 
+    }
+
+
+    .cookie-message {
+        position: absolute;
+        top: 29%; 
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 28%; 
+        
+        text-align: center;
+        color: #222;
+        
+
+        font-size: clamp(6px, 1vw, 12px); 
+        line-height: 1.2;
+        
+        opacity: 0; 
+        transition: opacity 0.3s ease-in-out;
+        pointer-events: none; 
+    }
+
+    
+    .fortune-cookie-container.is-open .cookie-img.closed {
+        opacity: 0;
+    }
+
+    .fortune-cookie-container.is-open .cookie-img.open {
+        opacity: 1;
+    }
+
+    .fortune-cookie-container.is-open .cookie-message {
+        opacity: 1;
+        transition-delay: 0.1s; 
+    }
+
+    #cookie-confirm {
+    opacity: 0;
+    transition: opacity 0.3s ease; 
+    color: #4CAF50; 
+    font-size: 12px;
+}
+
+  </style>
+</head>
+<body>
+<svg style="width:0;height:0;position:absolute;" aria-hidden="true">
+  <filter id="noise">
+    <feTurbulence baseFrequency="0.02" numOctaves="3" result="noise" seed="0">
+      <animate attributeName="seed" values="1;2;3;4" dur="0.5s" calcMode="discrete" repeatCount="indefinite"/>
+    </feTurbulence>
+    <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.5" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+</svg>
+<div class="cafe-card">
+
+    
+
+  <div class="banner">
+    welcome to eli and amy's café
+    <div class="win-controls">
+      <div class="win-btn" title="minimize">&#8211;</div>
+      <div class="win-btn" title="close">&#x2715;</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="intro">
+
+      <div class="intro-left">
+        <div>look at our new <span class="g">dishes</span> and<br>
+           <span class="g">cute desserts!</span> ☘</div>
+        <div class="img-ph intro-food-img">
+          <img src="assets/imgs/💭 ˖ ࣪ ‹ 𝘱𝘯𝘨 𖥔 ࣪ ᥫ᭡.jpg" alt="intro food image" width="100%" height="100%">
+        </div>
+        <div class="intro-caption">
+          <span class="g">today's special. . . </span><br>
+          delicious starry egg ramen!<br>
+          at only <span class="g">30 dabloons</span>.
+        </div>
+      </div>
+
+      <!-- right: profile -->
+      <div class="intro-right">
+        <div class="pruniaz">Make each other little meals!</div>
+        <div class="profile-bio">
+          <div class="sprite-track">
+            <div class="sprite-runner" id="sprite-eli"></div>
+            <div class="sprite-runner" id="sprite-amy"></div>
+          </div>
+        </div>
+        <div class="intro-caption">
+          Drag and drop ingredients to make a meal for each other!<br>
+          Send your order and then recieve orders sent to you on the calendar ^.^<br>
+          Send and recieve cookies with messages too!<br>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <div class="banner">menu</div>
+
+
+  <div class="section">
+    <div id="meal-maker">
+      <div id="meal-canvas"></div>
+      <div class="meal-ingredients">
+        <div class="ingredient-toolbar" id="ingredient-toolbar"></div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="section">
+    <div class="order-columns">
+
+
+      <div class="send-order">
+        <div class="order-section-title">send order ✉</div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+            <input type="text" id="message" name="message" placeholder="Send a message with the order!" style="flex:1;padding:4px 8px;border:1px solid #c8d9c5;border-radius:3px;font-size:12px;">
+          <button class="btn" id="save-order-btn">save order</button>
+          <span id="save-confirm">✓ saved!</span>
+        </div>
+        <details>
+          <summary>view order data</summary>
+          <pre id="order-json" class="order-json-box"></pre>
+        </details>
+      </div>
+
+
+      <div class="receive-order">
+        <div class="order-section-title">receive order 📬</div>
+        <div class="cal-header">
+          <button class="cal-nav" id="cal-prev">‹</button>
+          <span class="cal-title" id="cal-title"></span>
+          <button class="cal-nav" id="cal-next">›</button>
+        </div>
+        <div class="cal-grid" id="cal-grid"></div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <div class="section">
+    <div id="message-label"></div>
+    <br>
+    <div id="preview-canvas"></div>
+    <div id="preview-label">select a date with a saved order to preview</div>
+  </div>
+
+
+  <div class="banner">our memories eweh</div>
+
+
+  <div class="section" style="padding:0;overflow:visible;">
+    <div class="polaroid-wall" id="polaroid-wall"></div>
+  </div>
+
+    <div class="banner">open a cookie!!</div>
+  <div class="section">
+    <div class="games">
+
+      <div class="fortune-cookie-container" id="interactiveCookie">
+        <img src="assets/cookie closed.png" alt="Closed Fortune Cookie" class="cookie-img closed">
+        <img src="assets/cookie open.png" alt="Open Fortune Cookie" class="cookie-img open">
+        
+        <div class="cookie-message">
+            You will soon encounter a delightful piece of code.
+        </div>
+    </div>
+
+    </div>
+
+    <div class="banner">send a cookie!</div>
+    <div class="section">
+        <div class="send-cookie">
+            <div class="order-section-title">send cookie ✉</div>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+                <input type="text" id="cookieMessage" name="cookieMessage" placeholder="Type your message here!" style="flex:1;padding:4px 8px;border:1px solid #c8d9c5;border-radius:3px;font-size:12px;">
+            <button class="btn" id="send-cookie-btn">send cookie</button>
+            <span id="cookie-confirm">✓ sent!</span>
+            </div>
+        </div>
+    </div>
+
+  </div>
+
+</div>
+</body>
+<script type="module">
+  import "https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js";
+import "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js";
+
+  const firebaseConfig = {
+
+    apiKey: "AIzaSyA8oE-M9GcNevmHddS1Jp4eudfG7xUGmb0",
+
+    authDomain: "amy-elis-cafe.firebaseapp.com",
+
+    projectId: "amy-elis-cafe",
+
+    storageBucket: "amy-elis-cafe.firebasestorage.app",
+
+    messagingSenderId: "792378961340",
+
+    appId: "1:792378961340:web:1dabc49698ac788c618fb9"
+
+  };
+
+  const app = firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  let userName = localStorage.getItem('cafeUserName');
+if (!userName) {
+  userName = prompt("Enter your name:") || "Anonymous";
+  localStorage.setItem('cafeUserName', userName);
+}
+
+
+function buildOrderData() {
+  return canvasItems.map(({ name, file, scale, x, y, layer }) => ({ name, file, scale, x, y, layer }));
+}
+
+const INGREDIENTS = [
+  { name: 'Noodles',     file: 'bowl.png',     scale: 1.6  },
+  { name: 'Rice',     file: 'rice.png',     scale: 1.2  },
+  { name: 'Eggs',     file: 'eggs.png',     scale: 0.75 },
+  { name: 'Nori',     file: 'nori.png',     scale: 0.85 },
+  { name: 'Pork',     file: 'pork.png',     scale: 0.8  },
+  { name: 'Mushroom', file: 'mushroom.png', scale: 0.65 },
+  { name: 'Topping',  file: 'topping.png',  scale: 0.6  },
+  { name: 'Thingy',   file: 'thingy.png',   scale: 0.65 },
+  { name: 'Chopsticks',   file: 'chopsticks.png',   scale: 1.0 },
+  { name: 'Kimchi',   file: 'kimchi.png',   scale: 0.8 },
+  { name: 'Matcha',   file: 'matcha.png',   scale: 1.6 },
+  { name: 'Miso Soup',   file: 'miso soup.png',   scale: 1.0 },
+  { name: 'Salmon Aburi',   file: 'salmon.png',   scale: 1.6 },
+  { name: 'Thai Iced Tea',   file: 'thai tea.png',   scale: 1.0 },
+  { name: 'Glass of Water',   file: 'water.png',   scale: 0.9 },
+  { name: 'Steamed Baozi',   file: 'baozi.png',   scale: 1.6 },
+  { name: 'Souffle Pankake', file: 'pankake.png', scale: 1.6 },
+  { name: 'Strawberry Shortcake', file: 'shortcake.png', scale: 1.0 }
+];
+const BASE_SIZE = 80; 
+
+
+const mealCanvas = document.getElementById('meal-canvas');
+let canvasItems = [];
+let nextLayer = 0;
+let activeDrag = null;
+
+const sfxGrab    = new Audio('assets/click-1.m4a');
+const sfxRelease = new Audio('assets/click-2.m4a');
+const sfxPops    = ['assets/pop1.m4a', 'assets/pop2.m4a', 'assets/pop3.m4a'];
+function playFrom0(sfx) { sfx.currentTime = 0; sfx.play(); }
+
+function playPop() {
+  const src = sfxPops[Math.floor(Math.random() * sfxPops.length)];
+  new Audio(src).play();
+}
+
+function makeCanvasEl(ingredient, x, y, layer) {
+  const size = Math.round(BASE_SIZE * ingredient.scale);
+  const el = document.createElement('div');
+  el.className = 'canvas-item';
+  el.style.cssText = `left:${x}px;top:${y}px;width:${size}px;height:${size}px;z-index:${layer};`;
+
+  const img = document.createElement('img');
+  img.src = `assets/food/${ingredient.file}`;
+  img.alt = ingredient.name;
+  img.draggable = false;
+  el.appendChild(img);
+
+  el.addEventListener('mousedown', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const entry = canvasItems.find(ci => ci.el === el);
+    if (!entry) return;
+    playFrom0(sfxGrab);
+    // Bring to front
+    entry.layer = nextLayer++;
+    el.style.zIndex = entry.layer;
+    el.classList.add('dragging');
+    const rect = mealCanvas.getBoundingClientRect();
+    activeDrag = { entry, offsetX: e.clientX - rect.left - entry.x, offsetY: e.clientY - rect.top - entry.y };
+  });
+
+
+  el.addEventListener('dblclick', () => {
+    canvasItems = canvasItems.filter(ci => ci.el !== el);
+    el.remove();
+  });
+
+  return el;
+}
+
+function addToCanvas(ingredient, dropX, dropY) {
+  const size = Math.round(BASE_SIZE * ingredient.scale);
+  const x = Math.max(0, Math.min(dropX - size / 2, mealCanvas.offsetWidth - size));
+  const y = Math.max(0, Math.min(dropY - size / 2, mealCanvas.offsetHeight - size));
+  const layer = nextLayer++;
+  const el = makeCanvasEl(ingredient, x, y, layer);
+  mealCanvas.appendChild(el);
+  canvasItems.push({ type: 'food', name: ingredient.name, file: ingredient.file, scale: ingredient.scale, x, y, layer, el });
+}
+
+
+document.addEventListener('mousemove', (e) => {
+  if (!activeDrag) return;
+  const { entry } = activeDrag;
+  const rect = mealCanvas.getBoundingClientRect();
+  const size = entry.size ?? Math.round(BASE_SIZE * entry.scale);
+  let x = e.clientX - rect.left - activeDrag.offsetX;
+  let y = e.clientY - rect.top - activeDrag.offsetY;
+  x = Math.max(0, Math.min(x, rect.width - size));
+  y = Math.max(0, Math.min(y, rect.height - size));
+  entry.x = x; entry.y = y;
+  entry.el.style.left = x + 'px';
+  entry.el.style.top  = y + 'px';
+});
+
+document.addEventListener('mouseup', (e) => {
+  if (activeDrag) {
+    activeDrag.entry.el.classList.remove('dragging');
+    playFrom0(sfxRelease);
+    activeDrag = null;
+  }
+});
+
+
+INGREDIENTS.forEach(ing => {
+  const item = document.createElement('div');
+  item.className = 'ingredient-item';
+  item.draggable = true;
+
+  const img = document.createElement('img');
+  img.src = `assets/food/${ing.file}`;
+  img.className = 'ingredient-img';
+  img.alt = ing.name;
+  img.draggable = false;
+
+  const label = document.createElement('span');
+  label.textContent = ing.name;
+
+  item.append(img, label);
+  document.getElementById('ingredient-toolbar').appendChild(item);
+
+  item.addEventListener('dragstart', (e) => {
+    playFrom0(sfxGrab);
+    e.dataTransfer.effectAllowed = 'copy';
+    e.dataTransfer.setData('ingredient', ing.name);
+  });
+});
+
+mealCanvas.addEventListener('dragover', e => { e.preventDefault(); e.dataTransfer.dropEffect = 'copy'; });
+mealCanvas.addEventListener('drop', e => {
+  e.preventDefault();
+  const ing = INGREDIENTS.find(i => i.name === e.dataTransfer.getData('ingredient'));
+  if (!ing) return;
+  playFrom0(sfxRelease);
+  const rect = mealCanvas.getBoundingClientRect();
+  addToCanvas(ing, e.clientX - rect.left, e.clientY - rect.top);
+});
+
+const messageElement = document.getElementById('message');
+
+document.getElementById('save-order-btn').addEventListener('click', async () => {
+  if (canvasItems.length === 0) return;
+  if (!userName) { checkUserIdentity(); return; }
+
+  const today = new Date().toISOString().slice(0, 10);
+  const orderData = buildOrderData();
+  const message = messageElement.value;
+
+  try {
+    await db.collection('sharedOrders').doc(today).set({
+      sender: userName,
+      items: orderData,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+      message: message
+    });
+
+    document.getElementById('order-json').textContent = JSON.stringify(orderData, null, 2);
+    const confirm = document.getElementById('save-confirm');
+    confirm.textContent = "Sent to partner!";
+    confirm.style.opacity = '1';
+    setTimeout(() => confirm.style.opacity = '0', 2000);
+    
+    renderCalendar();
+  } catch (error) {
+    console.error("Error writing document: ", error);
+  }
+});
+
+let calYear, calMonth;
+
+function renderCalendar() {
+  const orders = JSON.parse(localStorage.getItem('cafeOrders') || '{}');
+  const now = new Date();
+  if (calYear === undefined) { calYear = now.getFullYear(); calMonth = now.getMonth(); }
+
+  const firstWeekday = new Date(calYear, calMonth, 1).getDay();
+  const totalDays    = new Date(calYear, calMonth + 1, 0).getDate();
+  const monthLabel   = new Date(calYear, calMonth).toLocaleString('default', { month: 'long' });
+  document.getElementById('cal-title').textContent = `${monthLabel} ${calYear}`;
+
+  const grid = document.getElementById('cal-grid');
+  grid.innerHTML = '';
+
+  ['su','mo','tu','we','th','fr','sa'].forEach(d => {
+    const h = document.createElement('div');
+    h.className = 'cal-day-hdr';
+    h.textContent = d;
+    grid.appendChild(h);
+  });
+
+  for (let i = 0; i < firstWeekday; i++) grid.appendChild(document.createElement('div'));
+
+  for (let d = 1; d <= totalDays; d++) {
+    const dateStr = `${calYear}-${String(calMonth + 1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const cell = document.createElement('div');
+    cell.className = 'cal-day' + (orders[dateStr] ? ' has-order' : '');
+    cell.textContent = d;
+    
+    if (orders[dateStr]) {
+      cell.title = `order from ${dateStr}`;
+      
+      const orderEntry = orders[dateStr];
+      const items = Array.isArray(orderEntry) ? orderEntry : orderEntry.items;
+      const message = Array.isArray(orderEntry) ? '' : orderEntry.message;
+
+      cell.addEventListener('click', () => loadOrder(items, dateStr, message));
+    }
+    grid.appendChild(cell);
+  }
+}
+
+document.getElementById('cal-prev').addEventListener('click', () => {
+  if (--calMonth < 0) { calMonth = 11; calYear--; }
+  renderCalendar();
+});
+document.getElementById('cal-next').addEventListener('click', () => {
+  if (++calMonth > 11) { calMonth = 0; calYear++; }
+  renderCalendar();
+});
+
+const previewCanvas = document.getElementById('preview-canvas');
+
+function loadOrder(items, dateStr, messageStr) {
+  previewCanvas.innerHTML = '';
+  document.getElementById('preview-label').textContent = `order from ${dateStr}`;
+  document.getElementById('message-label').textContent = messageStr || '';
+
+  const sorted = [...items].sort((a, b) => a.layer - b.layer);
+  sorted.forEach((item, i) => {
+    const el = makeCanvasEl({ file: item.file, name: item.name, scale: item.scale }, item.x, item.y, item.layer);
+    el.style.transform = 'scale(0)';
+    el.style.opacity = '0';
+    el.style.transition = 'transform 0.35s cubic-bezier(0.34,1.56,0.64,1),opacity 0.2s';
+    previewCanvas.appendChild(el);
+    setTimeout(() => { el.style.transform = 'scale(1)'; el.style.opacity = '1'; playPop(); }, i * 200);
+  });
+}
+
+async function fetchSharedOrders() {
+  try {
+    const querySnapshot = await db.collection('sharedOrders')
+      .where('sender', '!=', userName)
+      .get();
+
+    const localOrders = JSON.parse(localStorage.getItem('cafeOrders') || '{}');
+
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      const dateStr = doc.id; 
+      
+      if (data.sender !== userName) {
+        localOrders[dateStr] = {
+          items: data.items,
+          message: data.message || ''
+        };
+      }
+    });
+
+    localStorage.setItem('cafeOrders', JSON.stringify(localOrders));
+    renderCalendar();
+  } catch (error) {
+    console.error("Error fetching partner orders: ", error);
+  }
+}
+
+fetchSharedOrders();
+
+renderCalendar();
+
+const PHOTOS = [
+  { src: 'assets/imgs/1.jpeg', caption: 'honey uwah' },
+  { src: 'assets/imgs/2.jpeg', caption: 'eli loves amy more' },
+  { src: 'assets/imgs/3.jpeg', caption: 'no amy loves eli more' },
+  { src: 'assets/imgs/4.jpeg', caption: 'eweh' },
+];
+
+const CARD_ROTATIONS = [-5, 4, -8, 6];
+
+const DECO_SETS = [
+  [
+    { text: '🍃', style: 'top:48%;left:-20%;font-size:1.3em;rotate:-10deg;color:#6b9068;' },
+    { text: '🌸', style: 'top:-10%;left:-8%;font-size:0.75em;rotate:12deg;' },
+    { text: '✨', style: 'top:7%;left:9%;font-size:1.1em;color:#fff1a7;' },
+    { text: '☕', style: 'bottom:-3%;left:4%;font-size:0.75em;rotate:-5deg;' },
+    { text: '🍵', style: 'right:-12%;bottom:-8%;font-size:0.85em;rotate:5deg;' },
+    { text: '💚💚💚', style: 'top:22%;left:88%;font-size:0.6em;color:#8aac87;display:flex;flex-direction:column;' },
+    { text: '💝', style: 'top:-9%;right:-8%;color:pink;rotate:15deg;' },
+    { text: '🌿🌿🌿🌿', style: 'top:80%;left:2%;font-size:0.3em;letter-spacing:-5px;color:#47af5c;font-weight:bold;' },
+  ],
+  [
+    { text: '🌺', style: 'top:44%;left:-18%;font-size:1.2em;rotate:-8deg;color:#c88fa0;' },
+    { text: '⭐', style: 'top:-10%;left:-6%;font-size:0.7em;rotate:-15deg;color:#d4a847;' },
+    { text: '✨', style: 'top:6%;left:6%;font-size:1.1em;color:#fff1a7;' },
+    { text: '🍰', style: 'bottom:-4%;left:3%;font-size:0.7em;rotate:-3deg;' },
+    { text: '🍮', style: 'right:-11%;bottom:-8%;font-size:0.8em;rotate:8deg;' },
+    { text: '💕💕💕', style: 'top:18%;left:86%;font-size:0.6em;color:pink;display:flex;flex-direction:column;' },
+    { text: '🎠', style: 'top:-8%;right:-7%;color:#c88fa0;rotate:10deg;' },
+    { text: '🌷🌸🌷🌸🌷', style: 'top:80%;left:1%;font-size:0.3em;letter-spacing:-8px;color:#c88fa0;' },
+  ],
+  [
+    { text: '🌼', style: 'top:50%;left:-19%;font-size:1.2em;rotate:-12deg;color:#d4a847;' },
+    { text: '🍃', style: 'top:-9%;left:-7%;font-size:0.7em;rotate:20deg;color:#8aac87;' },
+    { text: '💫', style: 'top:8%;left:8%;font-size:1.0em;color:#fff1a7;' },
+    { text: '🍡', style: 'bottom:-3%;left:5%;font-size:0.7em;rotate:-6deg;' },
+    { text: '🌟', style: 'right:-10%;bottom:-7%;font-size:0.75em;rotate:3deg;' },
+    { text: '💛💛💛', style: 'top:20%;left:86%;font-size:0.6em;color:#d4a847;display:flex;flex-direction:column;' },
+    { text: '⭐', style: 'top:-8%;right:-7%;color:#d4a847;rotate:12deg;' },
+    { text: '🌿🌿🌿🌿', style: 'top:78%;left:2%;font-size:0.3em;letter-spacing:-5px;color:#47af5c;font-weight:bold;' },
+  ],
+  [
+    { text: '🦋', style: 'top:46%;left:-18%;font-size:1.2em;rotate:-9deg;color:#9b8ec4;' },
+    { text: '🌸', style: 'top:-10%;left:-8%;font-size:0.7em;rotate:-18deg;color:#c88fa0;' },
+    { text: '✨', style: 'top:7%;left:7%;font-size:1.0em;color:#fff1a7;' },
+    { text: '🫖', style: 'bottom:-3%;left:4%;font-size:0.72em;rotate:-4deg;' },
+    { text: '🌱', style: 'right:-10%;bottom:-8%;font-size:0.8em;rotate:6deg;color:#6b9068;' },
+    { text: '💜💜💜', style: 'top:20%;left:86%;font-size:0.6em;color:#9b8ec4;display:flex;flex-direction:column;' },
+    { text: '💝', style: 'top:-9%;right:-8%;color:pink;rotate:14deg;' },
+    { text: '🌷🌸🌷🌸🌷', style: 'top:80%;left:1%;font-size:0.3em;letter-spacing:-8px;color:#c88fa0;' },
+  ],
+];
+
+const wall = document.getElementById('polaroid-wall');
+for (let i = 0; i < 4; i++) {
+  const photo = PHOTOS[i];
+  const rot   = CARD_ROTATIONS[i];
+  const decos = DECO_SETS[i];
+
+  const card = document.createElement('div');
+  card.className = 'photo-card';
+  card.style.transform = `rotate(${rot}deg)`;
+
+  const wrapper = document.createElement('div');
+  wrapper.className = 'img-wrapper';
+  if (photo && photo.src) {
+    const img = document.createElement('img');
+    img.src = photo.src;
+    img.alt = photo.caption || '';
+    wrapper.appendChild(img);
+  } else {
+    const ph = document.createElement('div');
+    ph.className = 'photo-placeholder';
+    ph.textContent = '+ add photo';
+    wrapper.appendChild(ph);
+  }
+  card.appendChild(wrapper);
+
+  const cap = document.createElement('div');
+  cap.className = 'photo-caption';
+  cap.textContent = (photo && photo.caption) ? photo.caption : '⋆';
+  card.appendChild(cap);
+
+  const deco = document.createElement('div');
+  deco.className = 'deco';
+  decos.forEach(d => {
+    const span = document.createElement('span');
+    span.textContent = d.text;
+    span.style.cssText = d.style;
+    deco.appendChild(span);
+  });
+  card.appendChild(deco);
+
+  wall.appendChild(card);
+}
+
+
+
+async function fetchLatestPartnerCookie() {
+  try {
+    const querySnapshot = await db.collection('cookies')
+      .orderBy('timestamp', 'desc')
+      .limit(10) 
+      .get();
+
+    let partnerMessage = "Your fortune is yet to be written...";
+
+    for (const doc of querySnapshot.docs) {
+      const data = doc.data();
+      if (data.sender !== userName) {
+        partnerMessage = data.message;
+        break; 
+      }
+    }
+
+
+    const messageContainer = document.querySelector('.cookie-message');
+    if (messageContainer) {
+      messageContainer.textContent = partnerMessage;
+    }
+
+  } catch (error) {
+    console.error("Error fetching partner cookie: ", error);
+  }
+}
+
+
+const openSound = new Audio('assets/crunch.m4a');
+const closeSound = new Audio('assets/paper.m4a');
+
+const cookieContainer = document.getElementById('interactiveCookie');
+
+cookieContainer.addEventListener('click', function() {
+    const isNowOpen = this.classList.toggle('is-open');
+    
+    if (isNowOpen) {
+        openSound.currentTime = 0; 
+        openSound.play().catch(error => console.error("Audio playback failed:", error));
+    } else {
+        closeSound.currentTime = 0; 
+        closeSound.play().catch(error => console.error("Audio playback failed:", error));
+    }
+});
+
+document.getElementById('send-cookie-btn').addEventListener('click', async () => {
+  const messageInput = document.getElementById('cookieMessage');
+  const message = messageInput.value.trim();
+
+  if (!message) {
+      alert("Please type a message first!");
+      return; 
+  }
+
+  if (!userName) { 
+      checkUserIdentity(); 
+      return; 
+  }
+
+  try {
+    await db.collection('cookies').add({
+      sender: userName,
+      message: message,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+    const confirmSpan = document.getElementById('cookie-confirm');
+    confirmSpan.style.opacity = '1';
+    
+    setTimeout(() => {
+        confirmSpan.style.opacity = '0';
+    }, 2000);
+
+    messageInput.value = '';
+
+  } catch (error) {
+    console.error("Error writing cookie document: ", error);
+  }
+});
+
+fetchLatestPartnerCookie();
+
+</script>
+</html>
